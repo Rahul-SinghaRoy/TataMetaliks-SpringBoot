@@ -7,11 +7,16 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -27,22 +32,22 @@ import com.kirat.tm.model.RoleAccess;
 import com.kirat.tm.model.ServiceResponse;
 import com.kirat.tm.utils.OLCUtil;
 
-@Controller
+@RestController
 @EnableWebMvc
 public class RoleManagementController {
 	public String roleURL = OLCUtil.getValue(OLCProp.URL_OF_ROLESERVICE);
 	// String tataUrl="http://localhost:8080/TataMetaliks/";
 	String tataUrl = "http://localhost:8080";
 
-	@RequestMapping(value = "/Role", method = RequestMethod.POST)
-	public @ResponseBody ServiceResponse createRole(@RequestBody Role role) {
+	@PostMapping(value = "/Role")
+	public ServiceResponse createRole(@RequestBody Role role) {
 		RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.postForObject(roleURL + "/Role", role, ServiceResponse.class);
 	}
 
 	@SuppressWarnings("unused")
-	@RequestMapping(value = "/RolewithModule", method = RequestMethod.POST)
-	public @ResponseBody JsonResponse createRolewithModule(@RequestBody ModelMap model) throws IOException {
+	@PostMapping(value = "/RolewithModule")
+	public JsonResponse createRolewithModule(@RequestBody ModelMap model) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		JsonResponse response = new JsonResponse();
 		Role role = new Role();
@@ -77,23 +82,23 @@ public class RoleManagementController {
 		return response;
 	}
 
-	@RequestMapping(value = "/Role", method = RequestMethod.GET)
-	public @ResponseBody ServiceResponse getRoleList() {
+	@GetMapping(value = "/Role")
+	public ServiceResponse getRoleList() {
 		RestTemplate restTemplate = new RestTemplate();
 		ServiceResponse serviceResponse = restTemplate.getForObject(roleURL + "/Role", ServiceResponse.class);
 		return serviceResponse;
 	}
 
-	@RequestMapping(value = "/Role/{role_id}", method = RequestMethod.GET)
-	public @ResponseBody ServiceResponse getRoleById(@PathVariable("role_id") String role_id) {
+	@GetMapping(value = "/Role/{role_id}")
+	public ServiceResponse getRoleById(@PathVariable("role_id") String role_id) {
 		RestTemplate restTemplate = new RestTemplate();
 		ServiceResponse serviceResponse = restTemplate.getForObject(roleURL + "/Role" + "/" + role_id,
 				ServiceResponse.class);
 		return serviceResponse;
 	}
 
-	@RequestMapping(value = "/Role", method = RequestMethod.PUT)
-	public @ResponseBody ServiceResponse updateRole(@RequestBody Role role) {
+	@PutMapping(value = "/Role")
+	public ServiceResponse updateRole(@RequestBody Role role) {
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.put(roleURL + "/Role", role);
 		ServiceResponse serviceResponse = restTemplate.getForObject(roleURL + "/Role" + "/" + role.getRoleid(),
@@ -102,8 +107,8 @@ public class RoleManagementController {
 		return serviceResponse;
 	}
 
-	@RequestMapping(value = "/Role/{role_id}", method = RequestMethod.DELETE)
-	public @ResponseBody ServiceResponse deleteRole(@PathVariable("role_id") String role_id) {
+	@DeleteMapping(value = "/Role/{role_id}")
+	public ServiceResponse deleteRole(@PathVariable("role_id") String role_id) {
 		RestTemplate restTemplate = new RestTemplate();
 		ServiceResponse serviceResponse = restTemplate.getForObject(roleURL + "/Role" + "/" + role_id,
 				ServiceResponse.class);
@@ -112,8 +117,8 @@ public class RoleManagementController {
 		return serviceResponse;
 	}
 	
-	@RequestMapping(value = "/roleList", method = RequestMethod.GET, consumes = "application/json")
-	public @ResponseBody JsonResponse getAllRoleListTable()
+	@GetMapping(value = "/roleList", consumes = "application/json")
+	public JsonResponse getAllRoleListTable()
 			throws JsonParseException, JsonMappingException, IOException {
 
 		JsonResponse response = new JsonResponse();

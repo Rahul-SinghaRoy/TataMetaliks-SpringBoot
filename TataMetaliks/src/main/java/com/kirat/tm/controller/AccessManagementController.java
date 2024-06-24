@@ -11,10 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -30,7 +32,7 @@ import com.kirat.tm.model.ServiceResponse;
 import com.kirat.tm.model.UserAccess;
 import com.kirat.tm.utils.OLCUtil;
 
-@Controller
+@RestController
 @EnableWebMvc
 public class AccessManagementController {
 
@@ -50,15 +52,15 @@ public class AccessManagementController {
 	private String userAccessURL = accessURL + "/UserAccess";
 
 	// Method to create Role Access Details
-	@RequestMapping(value = "/RoleAccess", method = RequestMethod.POST)
-	public @ResponseBody ServiceResponse createRoleAccess(@RequestBody RoleAccess roleAccess) {
+	@PostMapping(value = "/RoleAccess")
+	public ServiceResponse createRoleAccess(@RequestBody RoleAccess roleAccess) {
 		RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.postForObject(roleAccessURL, roleAccess, ServiceResponse.class);
 	}
 
 	// Method to create Multiple Role Access Details once
-	@RequestMapping(value = "/RoleAccessList", method = RequestMethod.POST)
-	public @ResponseBody ServiceResponse createRoleAccessList(@RequestBody List<RoleAccess> roleAccess) {
+	@PostMapping(value = "/RoleAccessList")
+	public ServiceResponse createRoleAccessList(@RequestBody List<RoleAccess> roleAccess) {
 		for (int i = 0; i < roleAccess.size(); i++) {
 			System.out.println(roleAccess.get(i).getModuleid().toString());
 		}
@@ -67,16 +69,16 @@ public class AccessManagementController {
 	}
 
 	// Method to get all Role Access Details
-	@RequestMapping(value = "/RoleAccess", method = RequestMethod.GET)
-	public @ResponseBody ServiceResponse getRoleAccessList() {
+	@GetMapping(value = "/RoleAccess")
+	public ServiceResponse getRoleAccessList() {
 		RestTemplate restTemplate = new RestTemplate();
 		ServiceResponse serviceResponse = restTemplate.getForObject(roleAccessURL, ServiceResponse.class);
 
 		return serviceResponse;
 	}
 
-	@RequestMapping(value = "/RoleAccessByRole/{role_id}", method = RequestMethod.GET)
-	public @ResponseBody ServiceResponse getRoleAccessByRole(@PathVariable("role_id") String role_id) {
+	@GetMapping(value = "/RoleAccessByRole/{role_id}")
+	public ServiceResponse getRoleAccessByRole(@PathVariable("role_id") String role_id) {
 		RestTemplate restTemplate = new RestTemplate();
 		ServiceResponse serviceResponse = restTemplate.getForObject(roleAccessURL + "ByRole/" + role_id,
 				ServiceResponse.class);
@@ -85,21 +87,21 @@ public class AccessManagementController {
 	}
 
 	// Method to create User Access Details
-	@RequestMapping(value = "/UserAccess", method = RequestMethod.POST)
-	public @ResponseBody ServiceResponse createUserAccess(@RequestBody UserAccess userAccess) {
+	@PostMapping(value = "/UserAccess")
+	public ServiceResponse createUserAccess(@RequestBody UserAccess userAccess) {
 		RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.postForObject(userAccessURL, userAccess, ServiceResponse.class);
 	}
 
-	@RequestMapping(value = "/UserAccess", method = RequestMethod.GET)
-	public @ResponseBody ServiceResponse getUserAccessList() {
+	@GetMapping(value = "/UserAccess")
+	public ServiceResponse getUserAccessList() {
 		RestTemplate restTemplate = new RestTemplate();
 		ServiceResponse serviceResponse = restTemplate.getForObject(userAccessURL, ServiceResponse.class);
 		return serviceResponse;
 	}
 
-	@RequestMapping(value = "/UserAccessByRole/{role_id}", method = RequestMethod.GET)
-	public @ResponseBody ServiceResponse getUserAccessByRole(@PathVariable("role_id") String role_id) {
+	@GetMapping(value = "/UserAccessByRole/{role_id}")
+	public ServiceResponse getUserAccessByRole(@PathVariable("role_id") String role_id) {
 		RestTemplate restTemplate = new RestTemplate();
 		ServiceResponse serviceResponse = restTemplate.getForObject(userAccessURL + "ByRole/" + role_id,
 				ServiceResponse.class);
@@ -107,8 +109,8 @@ public class AccessManagementController {
 		return serviceResponse;
 	}
 
-	@RequestMapping(value = "/UserAccessByAccountId/{accountid}", method = RequestMethod.GET)
-	public @ResponseBody ServiceResponse getUserAccessByAccount(@PathVariable("accountid") String accountid) {
+	@GetMapping(value = "/UserAccessByAccountId/{accountid}")
+	public ServiceResponse getUserAccessByAccount(@PathVariable("accountid") String accountid) {
 		RestTemplate restTemplate = new RestTemplate();
 
 		ServiceResponse serviceResponse = restTemplate.getForObject(userAccessURL + "ByAccountId/" + accountid,
@@ -117,8 +119,8 @@ public class AccessManagementController {
 		return serviceResponse;
 	}
 
-	@RequestMapping(value = "/UserAccessList", method = RequestMethod.POST)
-	public @ResponseBody ServiceResponse createUserAccessList(@RequestBody ModelMap model) {
+	@PostMapping(value = "/UserAccessList")
+	public ServiceResponse createUserAccessList(@RequestBody ModelMap model) {
 		RestTemplate restTemplate = new RestTemplate();
 		ServiceResponse serviceResponse = new ServiceResponse();
 		String arrayname[] = model.get("roleid").toString().replace("[", "").split(",");
@@ -133,8 +135,8 @@ public class AccessManagementController {
 		return serviceResponse;
 	}
 
-	@RequestMapping(value = "/transactionAccess", method = RequestMethod.POST)
-	public @ResponseBody JsonResponse createTransactionAccess(@RequestBody ModelMap model) throws IOException {
+	@PostMapping(value = "/transactionAccess")
+	public JsonResponse createTransactionAccess(@RequestBody ModelMap model) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		JsonResponse response = new JsonResponse();
 		ServiceResponse serviceResponse = new ServiceResponse();
@@ -150,8 +152,8 @@ public class AccessManagementController {
 		return response;
 	}
 
-	@RequestMapping(value = "/getRoleAccessDetails", method = RequestMethod.POST, consumes = "application/json")
-	public @ResponseBody JsonResponse getAllTransListByModuleId(@RequestBody ModelMap model)
+	@PostMapping(value = "/getRoleAccessDetails", consumes = "application/json")
+	public JsonResponse getAllTransListByModuleId(@RequestBody ModelMap model)
 			throws JsonParseException, JsonMappingException, IOException {
 
 		JsonResponse response = new JsonResponse();
@@ -189,8 +191,8 @@ public class AccessManagementController {
 		return response;
 	}
 
-	@RequestMapping(value = "/updatetransactionAccess", method = RequestMethod.POST)
-	public @ResponseBody JsonResponse updateTransactionAccess(@RequestBody ModelMap model) throws IOException {
+	@PostMapping(value = "/updatetransactionAccess")
+	public JsonResponse updateTransactionAccess(@RequestBody ModelMap model) throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		JsonResponse response = new JsonResponse();
 		ServiceResponse serviceResponse = new ServiceResponse();
@@ -211,8 +213,8 @@ public class AccessManagementController {
 		return response;
 	}
 
-	@RequestMapping(value = "/updateUserAccess", method = RequestMethod.POST)
-	public @ResponseBody ServiceResponse createUserAccess(@RequestBody ModelMap reqmodel) {
+	@PostMapping(value = "/updateUserAccess")
+	public ServiceResponse createUserAccess(@RequestBody ModelMap reqmodel) {
 		RestTemplate restTemplate = new RestTemplate();
 		ServiceResponse serviceResponse = restTemplate.postForObject(accessUrl + "UserAccessByAccountId", reqmodel,
 				ServiceResponse.class);

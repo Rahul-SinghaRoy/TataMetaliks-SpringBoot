@@ -7,11 +7,16 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -26,7 +31,7 @@ import com.kirat.tm.model.ResponsePojo;
 import com.kirat.tm.model.ServiceResponse;
 import com.kirat.tm.utils.OLCUtil;
 
-@Controller
+@RestController
 @EnableWebMvc
 public class AccountManagementController {
 
@@ -36,16 +41,16 @@ public class AccountManagementController {
 	String transUrl = "http://14.141.110.54:8080/tmt-modmngmnt/";
 	String rolUrl = "http://14.141.110.54:8080/tmt-rolemngmnt/";
 
-	@RequestMapping(value = "/Account", method = RequestMethod.POST)
-	public @ResponseBody ServiceResponse createAccount(@RequestBody Account account) {
+	@PostMapping(value = "/Account")
+	public ServiceResponse createAccount(@RequestBody Account account) {
 		RestTemplate restTemplate = new RestTemplate();
 		ServiceResponse serviceResponse = restTemplate.postForObject(accountURL + "/Account", account,
 				ServiceResponse.class);
 		return serviceResponse;
 	}
 
-	@RequestMapping(value = "/Account", method = RequestMethod.GET)
-	public @ResponseBody JsonResponse getAccountList(@RequestBody ModelMap model) {
+	@GetMapping(value = "/Account")
+	public JsonResponse getAccountList(@RequestBody ModelMap model) {
 		JsonResponse response = new JsonResponse();
 		RestTemplate restTemplate = new RestTemplate();
 		ServiceResponse serviceResponse = restTemplate.getForObject(accountURL + "/Account", ServiceResponse.class);
@@ -62,8 +67,8 @@ public class AccountManagementController {
 		return response;
 	}
 
-	@RequestMapping(value = "/AccountDtl/{account_id}", method = RequestMethod.GET)
-	public @ResponseBody JsonResponse getAccountD(@PathVariable("account_id") String account_id) {
+	@GetMapping(value = "/AccountDtl/{account_id}")
+	public JsonResponse getAccountD(@PathVariable("account_id") String account_id) {
 
 		JsonResponse response = new JsonResponse();
 		RestTemplate restTemplate = new RestTemplate();
@@ -74,8 +79,8 @@ public class AccountManagementController {
 		return response;
 	}
 
-	@RequestMapping(value = "/Account", method = RequestMethod.PUT)
-	public @ResponseBody ServiceResponse updateAccount(@RequestBody Account account) {
+	@PutMapping(value = "/Account")
+	public ServiceResponse updateAccount(@RequestBody Account account) {
 		RestTemplate restTemplate = new RestTemplate();
 		ServiceResponse serviceResponse = new ServiceResponse();
 		try {
@@ -97,8 +102,8 @@ public class AccountManagementController {
 		return serviceResponse;
 	}
 
-	@RequestMapping(value = "/Account/{account_id}", method = RequestMethod.DELETE)
-	public @ResponseBody ServiceResponse deleteAccount(@PathVariable("account_id") String account_id) {
+	@DeleteMapping(value = "/Account/{account_id}")
+	public ServiceResponse deleteAccount(@PathVariable("account_id") String account_id) {
 		RestTemplate restTemplate = new RestTemplate();
 		ServiceResponse serviceResponse = new ServiceResponse();
 		try {
@@ -117,8 +122,8 @@ public class AccountManagementController {
 	}
 
 	// Method to Activate Account
-	@RequestMapping(value = "/AccountActivate", method = RequestMethod.POST)
-	public @ResponseBody ServiceResponse activateAccount(@RequestBody List<String> account_id) {
+	@PostMapping(value = "/AccountActivate")
+	public ServiceResponse activateAccount(@RequestBody List<String> account_id) {
 		RestTemplate restTemplate = new RestTemplate();
 		ServiceResponse serviceResponse = new ServiceResponse();
 		try {
@@ -135,8 +140,8 @@ public class AccountManagementController {
 	}
 
 	// Method to Deactivate Account
-	@RequestMapping(value = "/AccountDeactivate", method = RequestMethod.POST)
-	public @ResponseBody ServiceResponse deactivateAccount(@RequestBody List<String> account_id) {
+	@PostMapping(value = "/AccountDeactivate")
+	public ServiceResponse deactivateAccount(@RequestBody List<String> account_id) {
 		RestTemplate restTemplate = new RestTemplate();
 		ServiceResponse serviceResponse = new ServiceResponse();
 		try {
@@ -152,8 +157,8 @@ public class AccountManagementController {
 
 	}
 
-	@RequestMapping(value = "/userList", method = RequestMethod.POST, consumes = "application/json")
-	public @ResponseBody JsonResponse getuserList(@RequestBody ModelMap reqmodel)
+	@PostMapping(value = "/userList", consumes = "application/json")
+	public JsonResponse getuserList(@RequestBody ModelMap reqmodel)
 			throws JsonParseException, JsonMappingException, IOException {
 		JsonResponse response = new JsonResponse();
 		RestTemplate restTemplate = new RestTemplate();
